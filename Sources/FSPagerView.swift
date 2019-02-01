@@ -509,10 +509,15 @@ open class FSPagerView: UIView,UICollectionViewDataSource,UICollectionViewDelega
     /// - Parameters:
     ///   - index: The index of the item to scroll into view.
     ///   - animated: Specify true to animate the scrolling behavior or false to adjust the pager view’s visible content immediately.
-    @objc(scrollToItemAtIndex:animated:)
-    open func scrollToItem(at index: Int, animated: Bool) {
+    @objc(scrollToItemAtIndex:animated:error:)
+    open func scrollToItem(at index: Int, animated: Bool) throws {
         guard index < self.numberOfItems else {
-            fatalError("index \(index) is out of range [0...\(self.numberOfItems-1)]")
+            let errorMessage = "index \(index) is out of range [0...\(self.numberOfItems-1)]"
+            let userInfo = [
+                NSLocalizedDescriptionKey: errorMessage,
+                NSLocalizedFailureReasonErrorKey: errorMessage
+            ];
+            throw NSError(domain: "com.wenchaod.FSPagerView", code: 1, userInfo: userInfo)
         }
         let indexPath = { () -> IndexPath in
             if let indexPath = self.possibleTargetingIndexPath, indexPath.item == index {
